@@ -2,9 +2,9 @@ pipeline {
     agent any
     tools {nodejs 'MY-NODE'}
     stages {
-        stage('Pulling Source Code'){
+        stage('Preparation step'){
             steps{
-                git 'https://github.com/doanha1982/ha-first-build-with-jenkin.git'
+                echo 'You may do something before building source code'
             }
         }
         stage('Build') {
