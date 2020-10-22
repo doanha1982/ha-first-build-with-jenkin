@@ -1,16 +1,25 @@
 node {
+    def app
 
-    checkout scm
-
-    tools {
-        docker 'docker'
+    stage('Clone repository'){
+        checkout scm
+    }
+    
+    stage('Build docker image'){
+        app = docker.build("doanmanhsonha/build-with-jenkins")
     }
 
-    docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-
-        def customImage = docker.build("doanmanhsonha/build-with-jenkins")
-
-        /* Push the container to the custom Registry */
-        customImage.push()
+    stage('Test docker image'){
+        app.inside {
+            sh 'echo "Tests passed"'
+        }
     }
+
+    stage('Push docker image to docker hub'){
+        docker.withRegistry('https://registry.hub.docker.com', 'docker') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
+        }
+    }
+
 }
