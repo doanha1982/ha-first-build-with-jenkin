@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    tools {nodejs 'MY-NODE'}
+    tools {nodejs 'nodejs'}
     stages {
         stage('Preparation step'){
             steps{
