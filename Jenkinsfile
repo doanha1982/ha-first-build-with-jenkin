@@ -1,18 +1,12 @@
-pipeline {
-    agent any
-    tools {nodejs 'nodejs'}
-    stages {
-        stage('Preparation step'){
-            steps{
-                echo 'You may do something before building source code'
-                echo 'alright, let go'
-            }
-        }
-        stage('Build') {
-            steps {
-                echo 'Building...'
-                sh 'npm install'
-            }
-        }
+node {
+
+    checkout scm
+
+    docker.withRegistry('https://registry.hub.docker.com', 'docker') {
+
+        def customImage = docker.build("miltonc/dockerwebapp")
+
+        /* Push the container to the custom Registry */
+        customImage.push()
     }
 }
