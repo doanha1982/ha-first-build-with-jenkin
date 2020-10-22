@@ -5,6 +5,7 @@ pipeline {
         stage('Preparation step'){
             steps{
                 echo 'You may do something before building source code'
+                echo 'alright, let go'
             }
         }
         stage('Build') {
