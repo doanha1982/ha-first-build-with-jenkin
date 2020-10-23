@@ -1,25 +1,36 @@
-node {
-    def app
-
-    stage('Clone repository'){
-        checkout scm
+pipeline {
+	environment { 
+        registry = "doanmanhsonha/build-with-jenkins" 
+        registryCredential = 'dockerhub' 
+        dockerImage = '' 
     }
-    
-    stage('Build docker image'){
-        app = docker.build("doanmanhsonha/build-with-jenkins")
-    }
-
-    stage('Test docker image'){
-        app.inside {
-            sh 'echo "Tests passed"'
+	agent any 
+    stages { 
+        stage('Cloning our Git') { 
+            steps { 
+                git 'https://github.com/doanha1982/ha-first-build-with-jenkin.git' 
+            }
+        } 
+        stage('Building our image') { 
+            steps { 
+                script { 
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER" 
+                }
+            } 
         }
+        stage('Deploy our image') { 
+            steps { 
+                script { 
+                    docker.withRegistry( '', registryCredential ) { 
+                        dockerImage.push() 
+                    }
+                } 
+            }
+        } 
+        stage('Cleaning up') { 
+            steps { 
+                sh "docker rmi $registry:$BUILD_NUMBER" 
+            }
+        } 
     }
-
-    stage('Push docker image to docker hub'){
-        docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-        }
-    }
-
 }
