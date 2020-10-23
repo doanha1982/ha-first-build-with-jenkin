@@ -3,6 +3,7 @@ pipeline {
         registry = "doanmanhsonha/build-with-jenkins" 
         registryCredential = 'dockerhub' 
         dockerImage = '' 
+        node-version = 'nodejs-10-19-0'
     }
 	agent any 
     stages { 
@@ -11,7 +12,14 @@ pipeline {
                 git 'https://github.com/doanha1982/ha-first-build-with-jenkin.git' 
             }
         } 
-        stage('Building our image') { 
+        stage('Building NodeJs app'){
+            steps {
+                nodejs(node-version) {
+                    sh 'npm install'
+                }
+            }
+        }
+        stage('Building docker image') { 
             steps { 
                 script { 
                     dockerImage = docker.build registry + ":$BUILD_NUMBER" 
