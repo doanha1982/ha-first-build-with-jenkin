@@ -3,7 +3,7 @@ pipeline {
         registry = "doanmanhsonha/build-with-jenkins" 
         registryCredential = 'dockerhub' 
         dockerImage = '' 
-        node-version = 'nodejs-10-19-0'
+        nodeVersion = 'nodejs-10-19-0'
     }
 	agent any 
     stages { 
@@ -14,7 +14,7 @@ pipeline {
         } 
         stage('Building NodeJs app'){
             steps {
-                nodejs(node-version) {
+                nodejs(nodeVersion) {
                     sh 'npm install'
                 }
             }
